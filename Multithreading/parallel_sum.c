@@ -5,7 +5,7 @@
 
 #define MAX_THREADS 8       // 1...8 number of max threads to create
 #define MIN_BLOCK_SIZE 100  // Minimum size of an array block
-#define N 50
+#define N 1024
 
 // Arguments for the parallel_sum function
 typedef struct {
@@ -50,13 +50,18 @@ bool sum(int arr[], int len, int* sumPtr) {
   return false;
 }
 
+/// <summary>
+/// Recurisve helper function to divide the work among several threads.
+/// </summary>
+/// <param name="arg">List of arguments of struct type Sum_arg.</param>
+/// <returns>Returns 1 if successfully. Otherwise 0.</returns>
 int parallel_sum(void* arg) {
 
   Sum_arg* argp = (Sum_arg*)arg; // A pointer to the arguments
-  printf("[parallel_sum] Address of Sum_arg: %p\n", argp);
-
+ 
   if (argp->len <= argp->block_size)
   {
+    // If length <= block_size add up the element
     for (int i = 0; i < argp->len; ++i)
     {
       argp->sum += argp->start[i];
@@ -67,7 +72,29 @@ int parallel_sum(void* arg) {
   {
     int mid = argp->len / 2;
     Sum_arg arg2 = { argp->start + mid, argp->len - mid, argp->block_size, 0 };
-  }
+    argp->len = mid;
 
-  return 0;
+    thrd_t th;
+    int res = 0;
+    if (thrd_create(&th, parallel_sum, arg) != thrd_success)
+    {
+      return 0;
+    }
+
+    if (!parallel_sum(&arg2))
+    {
+      thrd_detach(th);
+      return 0;
+    }
+
+    printf("New thread running: %d with \n", th._Tid);
+    thrd_join(th, &res);
+    if (!res)
+    {
+      return 0;
+    }
+    
+    argp->sum += arg2.sum;
+    return 1;
+  }
 }
