@@ -10,7 +10,7 @@ struct Point {
 	int y;
 }; /*stuct to hold x and y values*/
 
-int sub_main() {
+int main() {
 	struct Point a, b;
 
 	printf("Enter an x and y value for Point a: ");

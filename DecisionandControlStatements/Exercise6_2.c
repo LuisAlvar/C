@@ -17,7 +17,7 @@ struct Modifer {
 	int upper_bound;
 };
 
-int sub_main_2() {
+int main() {
 	
 	struct Grade gradeTable[5];
 	struct Modifer modifers[3];
