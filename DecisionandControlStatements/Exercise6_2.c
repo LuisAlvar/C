@@ -17,7 +17,7 @@ struct Modifer {
 	int upper_bound;
 };
 
-int main() {
+int sub_main_2() {
 	
 	struct Grade gradeTable[5];
 	struct Modifer modifers[3];
@@ -49,6 +49,7 @@ int main() {
 	modifers[2].upper_bound = 9;
 
 	while (1) {
+
 		printf("Enter a numeric grade (exit enter -1): ");
 		fgets(line, sizeof(line), stdin);
 		sscanf_s(line, "%d", &grade_entered);
