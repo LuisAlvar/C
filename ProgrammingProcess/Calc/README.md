@@ -22,25 +22,25 @@ will be updated and displayed. The following operators are valid:
 For example: (user input is in boldface)
 ><strong>calc</strong>
 <br/>
-> Result: 0
+Result: 0
 <br/>
-> Enter operator and number: <strong>+ 123</strong>
+Enter operator and number: <strong>+ 123</strong>
 <br/>
-> Result: 123
+Result: 123
 <br/>
-> Enter operator and number: <strong>- 23</strong>
+Enter operator and number: <strong>- 23</strong>
 <br/>
-> Result: 100
+Result: 100
 <br/>
-> Enter operator and number: <strong>/ 25</strong>
+Enter operator and number: <strong>/ 25</strong>
 <br/>
-> Result: 4
+Result: 4
 <br/>
-> Enter operator and number: <strong>* 4</strong>
+Enter operator and number: <strong>* 4</strong>
 <br/>
-> Result: 16
+Result: 16
 <br/>
-> 0
+0
 
 ## Code Design 
 Our simple caculator uses no files and requires no fancy data structures. What's
@@ -53,3 +53,6 @@ Loop
   Display the result
 End-Loop
 ```
+
+### Reference
+Oualline, Steve. Practioncal C Programming. 3rd Edition. Augest 1997.
