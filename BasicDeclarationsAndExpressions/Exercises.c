@@ -1,3 +1,4 @@
+// gcc .\Exercises.c -o .\bin\Exercises.exe
 #include <stdio.h>
 #include <stdbool.h>
 

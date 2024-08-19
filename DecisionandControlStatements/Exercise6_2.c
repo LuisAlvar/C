@@ -1,4 +1,4 @@
-
+// gcc .\Exercise6_2.c -o .\bin\Exercise6_2.exe
 #include <stdio.h>
 #include <math.h>
 
