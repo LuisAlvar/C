@@ -20,27 +20,19 @@ will be updated and displayed. The following operators are valid:
 |/       |Division      |
 
 For example: (user input is in boldface)
-><strong>calc</strong>
-<br/>
+```bash
+calc
 Result: 0
-<br/>
-Enter operator and number: <strong>+ 123</strong>
-<br/>
+Enter operator and number: + 123
 Result: 123
-<br/>
-Enter operator and number: <strong>- 23</strong>
-<br/>
+Enter operator and number: - 23
 Result: 100
-<br/>
-Enter operator and number: <strong>/ 25</strong>
-<br/>
+Enter operator and number: / 25
 Result: 4
-<br/>
-Enter operator and number: <strong>* 4</strong>
-<br/>
+Enter operator and number: * 4
 Result: 16
-<br/>
 0
+```
 
 ## Code Design 
 Our simple caculator uses no files and requires no fancy data structures. What's
