@@ -12,14 +12,33 @@ int main() {
   {
     printf("Result: %d\n", result);
     printf("Enter operator and number: ");
+
     fgets(line, sizeof(line), stdin);
     sscanf(line, "%c %d", &operator, &value);
 
-    if (operator = '+')
+    if((operator == 'q') || (operator == 'Q')) break;
+
+    if (operator == '+')
     {
       result += value;
-    } else {
-      pritnf("Unknown operator %c\n", operator);
+    } 
+    else if (operator == '-') {
+      result -= value;
+    }
+    else if (operator == '*') {
+      result *= value;
+    }
+    else if (operator == '/') {
+      if (value == 0)
+      {
+        printf("Error: Divide by zero\n");
+        printf("\toperation ignored\n");
+        continue;
+      }
+      result /= value;
+    }
+    else {
+      printf("Unknown operator %c\n", operator);
     }
     
   }
