@@ -4,7 +4,7 @@
 #-----------------------------------------------------------------#
 
 CC=gcc
-CFLAGS=-g -D__USE_FIXED_PROTOTYPES__ -ansi
+CFLAGS=-g -D__USE_FIXED_PROTOTYPES__ -ansi -std=c11
 
 #
 # Compiler flags:

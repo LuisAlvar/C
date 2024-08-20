@@ -12,9 +12,10 @@ a short list of unit conversion requested by client.
 ### Length 
 |Imperial Unit| Metric Units|
 |:------------|-------------|
-|Inches (in)       |Millimeter (mm)   |
-|Yard (yd)         |Meter (m)        |
-|Mile         |Kilometer (Km)    |
+|Inches (in)  |Meter (m)|
+|Feet (ft)    |Meter (m)|
+|Yard (yd)    |Meter (m)|
+|Mile         |Meter (m)|
 
 For example: (user input is in boldface)
 > Enter a imperial value along with unit: <strong>12 in</strong>
