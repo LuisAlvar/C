@@ -51,11 +51,13 @@ int main() {
 
 int process_dates(char date1[DATE_CHAR_ARRAY_SIZE], char date2[DATE_CHAR_ARRAY_SIZE]) {
 
-  struct DateTime dt1;
+  struct DateTime dt1, dt2;
   dt1 = convert_dates_to_int_data(date1);
+  dt2 = convert_dates_to_int_data(date2);
+ 
+  printf("Formatted date & time: %s\n", ctime(&dt1.time));
+  printf("Formatted date & time: %s\n", ctime(&dt2.time));
 
-
-  
   return 0;
 }
 
@@ -75,9 +77,20 @@ struct DateTime convert_dates_to_int_data(char date[DATE_CHAR_ARRAY_SIZE]) {
   dt.day = atoi(day);
   dt.year = atoi(year);
 
-  dt.st_time.tm_year = dt.year - 1900;
-  dt.st_time.tm_mon = dt.month - 1;
-  dt.st_time.tm_mday = 
+  time_t rawtime;
+  struct tm timeinfor;
+  
+  timeinfor.tm_year = dt.year - 1900;
+  timeinfor.tm_mon = dt.month - 1;
+  timeinfor.tm_mday = dt.day;
+  timeinfor.tm_hour = 0;
+  timeinfor.tm_min = 0;
+  timeinfor.tm_sec = 0;
+
+  rawtime = mktime(&timeinfor);
+
+  dt.st_time = timeinfor;
+  dt.time = rawtime;
 
   free(month);
   free(day);
