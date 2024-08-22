@@ -9,17 +9,22 @@
 char line[100];
 
 struct DateTime {
-  time_t time;
-  struct tm st_time;
+  time_t rawtime;
+  struct tm timeinfo;
   int year;
   int day;
   int month;
+  bool isLeapYear;
 };
 
 
 int process_dates(char date1[DATE_CHAR_ARRAY_SIZE], char date2[DATE_CHAR_ARRAY_SIZE]);
-void sub_str(char *source, char *dest, int start_index, int size);
 struct DateTime convert_dates_to_int_data(char date[DATE_CHAR_ARRAY_SIZE]);
+int process_years(int year1, int year2);
+int process_month_day(int month_a, int day_a, int month_b, int day_b);
+int days_in_this_month(int month);
+bool isLeapYear(int year);
+void sub_str(char *source, char *dest, int start_index, int size);
 
 
 int main() {
@@ -50,17 +55,20 @@ int main() {
 
 
 int process_dates(char date1[DATE_CHAR_ARRAY_SIZE], char date2[DATE_CHAR_ARRAY_SIZE]) {
+  int total_days = 0;
 
   struct DateTime dt1, dt2;
   dt1 = convert_dates_to_int_data(date1);
   dt2 = convert_dates_to_int_data(date2);
- 
-  printf("Formatted date & time: %s\n", ctime(&dt1.time));
-  printf("Formatted date & time: %s\n", ctime(&dt2.time));
+  
+  printf("first month: %d\n", dt1.month);
+  printf("second month: %d\n", dt2.month);
 
-  return 0;
+  total_days += process_month_day(dt1.month, dt1.day, dt2.month, dt2.day);
+  total_days += process_years(dt1.year, dt2.year);
+
+  return total_days;
 }
-
 
 struct DateTime convert_dates_to_int_data(char date[DATE_CHAR_ARRAY_SIZE]) {
 
@@ -76,21 +84,9 @@ struct DateTime convert_dates_to_int_data(char date[DATE_CHAR_ARRAY_SIZE]) {
   dt.month = atoi(month);
   dt.day = atoi(day);
   dt.year = atoi(year);
-
-  time_t rawtime;
-  struct tm timeinfor;
+  dt.isLeapYear = isLeapYear(dt.year);
   
-  timeinfor.tm_year = dt.year - 1900;
-  timeinfor.tm_mon = dt.month - 1;
-  timeinfor.tm_mday = dt.day;
-  timeinfor.tm_hour = 0;
-  timeinfor.tm_min = 0;
-  timeinfor.tm_sec = 0;
-
-  rawtime = mktime(&timeinfor);
-
-  dt.st_time = timeinfor;
-  dt.time = rawtime;
+  printf("Breaked %d/%d/%d\n", dt.month, dt.day, dt.year);
 
   free(month);
   free(day);
@@ -99,10 +95,163 @@ struct DateTime convert_dates_to_int_data(char date[DATE_CHAR_ARRAY_SIZE]) {
   return dt;
 }
 
+/// @brief Use to calculate the number of days between the two year within an interval. 
+/// @param year1 the first year within the interval (i.e., as the a within [a, b] interval)
+/// @param year2 the second year within the interval (i.e., as the b within [a, b] interval)
+/// @return Number of days 
+int process_years(int year1, int year2)
+{
 
+  int smaller_year = year1;
+  int greater_year = year2;
+
+  if(year1 > year2){
+    smaller_year  = year2;
+    greater_year = year1;
+  }
+
+  int count_the_num_of_years = greater_year - smaller_year;
+  int count_the_num_of_leap_year_in_between = 0;
+
+  for (int i = smaller_year; i <= greater_year; i++)
+  {
+    if(isLeapYear(i)) ++count_the_num_of_leap_year_in_between;
+  }
+  
+  return (count_the_num_of_years * 365) + (count_the_num_of_leap_year_in_between * 1);
+}
+
+/// @brief Use to calculate the number of day between two dates in terms of their months and days. 
+/// @param month_a the coresponding month of the given month date A
+/// @param day_a  the corresponsing day of the given month date A
+/// @param month_b the corresponding month of the given month date B
+/// @param day_b the corresponding day of the given month date B
+/// @return Number of days between a given mm/dd and another mm/dd 
+int process_month_day(int month_a, int day_a, int month_b, int day_b)
+{
+
+  printf("this is month_a: %d\n", month_a);
+  printf("this is month_b: %d\n", month_b);
+  int counter = 0;
+
+  int greater_month = 0;
+  int greater_day = 0;
+
+  greater_month = month_b;
+  greater_day = day_b;
+
+  int smaller_month = 0;
+  int smaller_day = 0;
+
+  smaller_month = month_a;
+  smaller_day = day_a;
+
+  if (month_a > month_b)
+  {
+    printf("month a is greater than month b");
+    greater_month = month_a;
+    greater_day = day_a;
+
+    smaller_month = month_b;
+    smaller_day = day_b;
+  }
+
+  // counter = Total days of a given month - the current day. 
+  printf("smaller_month %d: \n", smaller_month);
+  counter += days_in_this_month(smaller_month) - smaller_day;
+  printf("Counter check after (1): %d\n", counter);
+  // we move the given month from 01 to 02, because we alway accounted for the first month.
+  ++smaller_month;
+
+  // Now iterator throught the number from months from 02 to 11, and add the number of days within each month. 
+  for (int i = smaller_month; i < greater_month; i++)
+  {
+    counter += days_in_this_month(i);
+  }
+  
+  // Once you get to the last month, then we count upwards to the day. 
+  for (int i = 1; i <= days_in_this_month(greater_month); i++)
+  {
+    ++counter;
+    if (i == greater_day) break;
+  }
+  
+
+  return counter;
+}
+
+/// @brief Use to get the number of days within a given month. 
+/// @param month Any given month 
+/// @return Number of days within a given month
+int days_in_this_month(int month) {
+  int days = 0;
+  switch (month)
+  {
+    case 1:
+      days = 31;
+      break;
+    case 2:
+      days = 28;
+      break;
+    case 3:
+      days = 31;
+      break;
+    case 4:
+      days = 30;
+      break;
+    case 5:
+      days = 31;
+      break;
+    case 6:
+      days = 30;
+      break;
+    case 7:
+      days = 31;
+      break;
+    case 8:
+      days = 31;
+      break;
+    case 9:
+      days = 30;
+      break;
+    case 10:
+      days = 31;
+      break;
+    case 11:
+      days = 30;
+      break;
+    case 12:
+      days = 31;
+      break;
+  }
+  return days;
+}
+
+/// @brief 
+/// @param year 
+/// @return 
+bool isLeapYear(int year)
+{
+  bool result = false;
+  if (year % 4 == 0)
+  {
+    result = true;
+  }
+  else if(year % 100 == 0 && year % 400 != 0) {
+    result = false;
+  }
+  return result;
+}
+
+
+/// @brief 
+/// @param source 
+/// @param dest 
+/// @param start_index 
+/// @param size 
 void sub_str(char *source, char *dest, int start_index, int size){
   int index = start_index;
-  while (index < start_index + size) {
+  while (index <= start_index + size) {
     dest[strlen(dest)] = source[index];
     ++index;
   }
