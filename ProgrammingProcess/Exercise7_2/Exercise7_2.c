@@ -9,8 +9,6 @@
 char line[100];
 
 struct DateTime {
-  time_t rawtime;
-  struct tm timeinfo;
   int year;
   int day;
   int month;
@@ -33,28 +31,25 @@ int main() {
   char date_2[DATE_CHAR_ARRAY_SIZE];
   int days = 0;
 
-  while(1){
+  printf("Enter first date (mm/dd/yyyy): ");
+  fgets(line, sizeof(line), stdin);
+  sscanf(line, "%s", date_1);
+  // if(!strcmp(date_1,"q")) break;
 
-    printf("Enter first date (mm/dd/yyyy): ");
-    fgets(line, sizeof(line), stdin);
-    sscanf(line, "%s", date_1);
-    if(!strcmp(date_1,"q")) break;
+  printf("Enter second date (mm/dd/yyyy): ");
+  fgets(line, sizeof(line), stdin);
+  sscanf(line, "%s", date_2);
+  // if(!strcmp(date_2,"q")) break;
 
-    printf("Enter second date (mm/dd/yyyy): ");
-    fgets(line, sizeof(line), stdin);
-    sscanf(line, "%s", date_2);
-    if(!strcmp(date_2,"q")) break;
-
-    days = process_dates(date_1, date_2);
-    printf("Number of days between the dates: %d\n", days);
-  }
+  days = process_dates((char*)date_1, (char*)date_2);
+  printf("Number of days between the dates: %d\n", days);
 
   return 0;
 }
 
 
 
-int process_dates(char date1[DATE_CHAR_ARRAY_SIZE], char date2[DATE_CHAR_ARRAY_SIZE]) {
+int process_dates(char *date1, char *date2) {
   int total_days = 0;
 
   struct DateTime dt1, dt2;
@@ -70,27 +65,27 @@ int process_dates(char date1[DATE_CHAR_ARRAY_SIZE], char date2[DATE_CHAR_ARRAY_S
   return total_days;
 }
 
-struct DateTime convert_dates_to_int_data(char date[DATE_CHAR_ARRAY_SIZE]) {
+struct DateTime convert_dates_to_int_data(char *date) {
 
   struct DateTime dt;
-  char *month = malloc(2 * sizeof(char));
-  char *day = malloc(2 * sizeof(char));
-  char *year = malloc(4 * sizeof(char));
-  
-  sub_str(date, month, 0, 2);
-  sub_str(date, day, 3, 2);
-  sub_str(date, year, 6, 4);
+  struct tm tm = {0};
 
-  dt.month = atoi(month);
-  dt.day = atoi(day);
-  dt.year = atoi(year);
+  if (strptime(date, "%m/%d/%Y", &tm) == NULL)
+  {
+    printf("Date parsing failed!\n");
+    exit(2);
+    return dt;
+  }
+
+  time_t final_date = mktime(&tm);
+  printf("Date: %s", asctime(&tm));
+
+  dt.month = tm.tm_mon + 1;
+  dt.day = tm.tm_mday;
+  dt.year = tm.tm_year;
   dt.isLeapYear = isLeapYear(dt.year);
-  
+  printf("Is year a leap year: %d\n", dt.isLeapYear);
   printf("Breaked %d/%d/%d\n", dt.month, dt.day, dt.year);
-
-  free(month);
-  free(day);
-  free(year);
 
   return dt;
 }
@@ -251,8 +246,15 @@ bool isLeapYear(int year)
 /// @param size 
 void sub_str(char *source, char *dest, int start_index, int size){
   int index = start_index;
-  while (index <= start_index + size) {
-    dest[strlen(dest)] = source[index];
+  char *result = (char*)(size * sizeof(char));
+  int arr_index = 0;
+  while (index < start_index + size) {
+    printf("%c ", source[index]);
+    // dest[strlen(dest)] = source[index];
+    result[arr_index] = source[index];
+    ++arr_index;
     ++index;
   }
+  printf("\n");
+  printf("modified array: %s\n", result);
 }
