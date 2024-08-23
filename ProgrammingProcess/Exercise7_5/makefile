@@ -15,8 +15,8 @@ CFLAGS=-g -D__USE_FIXED_PROTOTYPES__ -ansi -std=c11
 #				-amso		-- Dont use GNU extensions. Stick to ANSI C.
 #
 
-Exercise7_4: Exercise7_4.c 
-	$(CC) $(CFLAGS) -o ./bin/Exercise7_4 Exercise7_4.c 
+Exercise7_5: Exercise7_5.c 
+	$(CC) $(CFLAGS) -o ./bin/Exercise7_5 Exercise7_5.c 
 	
 clean:
-	rm -f ./bin/Exercise7_4
+	rm -f ./bin/Exercise7_5
