@@ -11,7 +11,6 @@ void isPrime(int number) {
     return;
   }
   
-
   for (int i = 2; i <= number; i++)
   {
     if (number != i && number % i == 0)
@@ -27,7 +26,6 @@ void isPrime(int number) {
   } else {
     printf("\t\tNumber is not prime\n");
   }
-  
 }
 
 int main() {
