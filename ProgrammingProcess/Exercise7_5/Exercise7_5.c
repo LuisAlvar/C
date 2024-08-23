@@ -1,28 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define MAX_SERIAL_TRANSMISSION_SIZE_BUFFER 960
-#define SECONDS_IN_A_MINUTE 60
-#define MINUTES_IN_A_HOUR 60
-#define HOURS_IN_A_DAY 24
+void isPrime(int number) {
+  bool is_prime = true;
 
-char line[100];
+  if (number == 1 || number < 0)
+  {
+    printf("\t\tPrime number can only be natural numbers. Excluding 1\n");
+    return;
+  }
+  
+
+  for (int i = 2; i <= number; i++)
+  {
+    if (number != i && number % i == 0)
+    {
+      is_prime = false;
+      break;
+    }
+  }
+
+  if (is_prime)
+  {
+    printf("\t\tNumber is prime\n");
+  } else {
+    printf("\t\tNumber is not prime\n");
+  }
+  
+}
 
 int main() {
 
-  char send_buffer[MAX_SERIAL_TRANSMISSION_SIZE_BUFFER];
-  int filesize_in_bytes;
-  double completion_eta;
+  char line[100];
+  int num;
 
-  printf("Enter file size: ");
-  fgets(line, sizeof(line), stdin);
-  sscanf(line, "%d", &filesize_in_bytes);
-
-  int max_send_buffer_size_bytes_per_second =  sizeof(send_buffer);
-  completion_eta = (filesize_in_bytes/max_send_buffer_size_bytes_per_second) * (1.0/SECONDS_IN_A_MINUTE) * (1.0/MINUTES_IN_A_HOUR) * (1.0/HOURS_IN_A_DAY);
-
-  printf("Based on the limitation of our hardware, max transmission of 960 bytes per second is allowed.\n");
-  printf("A file size of %d bytes will take %.2f days.\n", filesize_in_bytes, completion_eta);
+  while(1) {
+    printf("Check if a number if prime: ");
+    fgets(line, sizeof(line), stdin);
+    sscanf(line, "%d", &num);
+    if (num == -1) break;
+    isPrime(num);
+  }
 
   return 0;
 }
