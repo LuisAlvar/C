@@ -72,16 +72,8 @@ int main() {
       }
       ++col_counter;
     }
+
     printf("\n");
-    //break;
-    // if (row_counter == 0)
-    // {
-    //   printf("+\n");
-    // }
-    // else
-    // {
-    //   printf("|\n");
-    // }
 
     if (row_counter - sq.height == 0) 
     {
