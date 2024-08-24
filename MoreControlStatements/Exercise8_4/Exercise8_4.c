@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 struct Square{
   int width;
@@ -125,26 +126,122 @@ int main() {
   board[4][((sq.width + 1) * col_counter) + 3] = '0';
   board[4][((sq.width + 1) * col_counter) + 4] = '0';
 
+  // third iteration 
+  col_counter = 0;
+  row_counter = 1;
+
+  // board[((sq.height + 1) * row_counter) + 1][((sq.width + 1) * col_counter) + 3] = ' ';
+  // board[((sq.height + 1) * row_counter) + 1][((sq.width + 1) * col_counter) + 4] = '1';
+  // // this is the same for all 
+  // board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + 2] = 'x';
+
+
+  // board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + 3] = ' ';
+  // board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + 4] = '2';
+
+  // // This is constant for all 
+  // board[((sq.height + 1) * row_counter) + 3][((sq.width + 1) * col_counter) + 2] = '-';
+  // board[((sq.height + 1) * row_counter) + 3][((sq.width + 1) * col_counter) + 3] = '-';
+  // board[((sq.height + 1) * row_counter) + 3][((sq.width + 1) * col_counter) + 4] = '-';
+
+  // // The result
+  // board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + 2] = ' ';
+  // board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + 3] = ' ';
+  // board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + 4] = '2';
+
+  int multi_table_row = 10;
+  int multi_table_col = 10;
+  int insert_index = 4;
+  int size = 0;
+  int result = 0;
+  char operands[2];
+  char compute[3];
+
+  sprintf(operands, "%d", multi_table_row);
+  size = strlen(operands);
+  int char_index = size - 1;
+
+  while (size != 0)
+  {
+    board[((sq.height + 1) * row_counter) + 1][((sq.width + 1) * col_counter) + insert_index] = operands[char_index];
+    --size;
+    --insert_index;
+    --char_index;
+  }
+  // this is the same for all 
+  board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + 2] = 'x';
+
+
+  sprintf(operands, "%d", multi_table_col);
+  size = strlen(operands);
+  char_index = size - 1;
+  insert_index = 4;
+
+  while (size != 0)
+  {
+    board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + insert_index] = operands[char_index];
+    --size;
+    --insert_index;
+    --char_index;
+  }
+  // board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + 3] = ' ';
+  // board[((sq.height + 1) * row_counter) + 2][((sq.width + 1) * col_counter) + 4] = '2';
+
+  // This is constant for all 
+  board[((sq.height + 1) * row_counter) + 3][((sq.width + 1) * col_counter) + 2] = '-';
+  board[((sq.height + 1) * row_counter) + 3][((sq.width + 1) * col_counter) + 3] = '-';
+  board[((sq.height + 1) * row_counter) + 3][((sq.width + 1) * col_counter) + 4] = '-';
+
+
+  result = 100;
+  sprintf(compute, "%d", result);
+  size = strlen(compute);
+  char_index = size - 1;
+  insert_index = 4;
+
+  while (size != 0)
+  {
+    board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + insert_index] = compute[char_index];
+    --size;
+    --insert_index;
+    --char_index;
+  }
+
+  // The result
+  // board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + 2] = ' ';
+  // board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + 3] = ' ';
+  // board[((sq.height + 1) * row_counter) + 4][((sq.width + 1) * col_counter) + 4] = '2';
+
+
+
+
+  for (int row = 0; row < cb.row; ++row)
+  {
+    for (int col = 0; col < cb.col; ++col)
+    {
+      // The multiplicaiton sign will always be the same place. 
+      board[((sq.height + 1) * row) + 2][((sq.width + 1) * col) + 2] = 'x';
+
+      // The diviser does not change is always constant
+      board[((sq.height + 1) * row) + (sq.height -1)][((sq.width + 1) * col) + 2] = '-';
+      board[((sq.height + 1) * row) + (sq.height -1)][((sq.width + 1) * col) + 3] = '-';
+      board[((sq.height + 1) * row) + (sq.height -1)][((sq.width + 1) * col) + 4] = '-';
+    }
+  }
+
 
   for (int row = 0; row < arr_length_rows; row++)
   {
-
     for (int col = 0; col < arr_length_cols; col++)
     {
       printf("%c", board[row][col]);
     }  
-    
-    if (row_counter == sq.height + 1)
-    {
-      printf("\n");
-      break;
-    }
-    
     printf("\n");
-    ++row_counter;
   }
   
 
 
   return 0;
 }
+
+
