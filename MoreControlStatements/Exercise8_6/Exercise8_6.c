@@ -5,18 +5,7 @@
 
 char line[100];
 int number;
-char result[200];
-
-enum PlaceValues {
-  ones,
-  tens, 
-  hundred, 
-  thousands,
-  ten_thousands,
-  houndred_thousands, 
-  millions
-};
-
+char result[500];
 
 void ConvertToWords(int num, char *p);
 bool PlacementPair(int place);
@@ -27,119 +16,147 @@ void Decimal(int digit, char *p);
 void Vigesimal(int digit, char *p);
 void Tens(int digit, char *p) ;
 
-int main() {
-
+int main(void) {
   while (1)
   {
- 
     printf("Enter a number to convert to words: ");
     fgets(line, sizeof(line), stdin);
     sscanf(line, "%d", &number);
-
     ConvertToWords(number, result);
-
     printf("%s\n", result);
   }
-
   return 0;
 }
 
-
 void ConvertToWords(int num, char *p) {
-  char char_arry_num[5];
-  char temp[100] = "";
-  char result[100] = "";
-  int arry_size;
-
-  sprintf(char_arry_num, "%d", num);
-  arry_size = strlen(char_arry_num);
+  char temp[250] = "";
+  char result[500] = "";
+  // number tracking with two indices
+  char char_arry_num[6]; /*limitation on the conversion - its okay for now*/
+  int char_arry_size;  
   int cur_index = 0;
   int adj_index = cur_index + 1;
-  char lower_rank[20] = "";
-  char upper_rank[20] = "";
-  char rank[20] = "";
+  // tracking the number placement 
+  char lower_rank[50] = "";
+  char upper_rank[50] = "";
+  char rank[50] = "";
   bool isPair = false;
-  int rank_index =  arry_size - 1;
+  int rank_index = 0;
 
-  printf("Rank Index: %d\n", rank_index);
-  printf("%c\n", char_arry_num[0]);
-  printf("%c\n", char_arry_num[1]);
+  sprintf(char_arry_num, "%d", num);
+  char_arry_size = strlen(char_arry_num);
+  rank_index =  char_arry_size - 1;
 
-  isPair = PlacementPair(rank_index);
-
-  printf("Is current rank a pair: %d\n", isPair);
-  // cur_index && adj_index;
-  // atoi(&char_arry_num[cur_index])
-  CurrentRankPlacement(rank_index, rank);
-  printf("This is the current rank: %s\n", rank);
-
-  if (isPair)
+  while(rank_index != -1)
   {
-    char *digit2 = (char*)malloc(sizeof(char)); 
-    *(digit2) = char_arry_num[cur_index];
-    char *digit1 = (char*)malloc(sizeof(char)); 
-    *(digit1) = char_arry_num[adj_index];
+    strcpy(temp, ""); /*Reset the temp buffer*/
+    isPair = PlacementPair(rank_index);
+    CurrentRankPlacement(rank_index, rank);
+    printf("Rank Index: %d\n", rank_index);
+    printf("Is Rank: %d\n", isPair);
+    printf("Current Placement Rank: %s\n", rank);
 
-    int two_digit_value = atoi(digit2) * 10 + atoi(digit1);
-    printf("%d\n", two_digit_value);
-
-    Vigesimal(two_digit_value, temp);
-    if(strlen(temp) == 0) 
+    /*>>>>>>>>>>>>>> 1. Handle the Numberic Conversion to Words <<<<<<<<<<<<<*/
+    if (isPair)
     {
-      Tens(atoi(digit2), temp);
-      strcat(result, temp);
+      // Get the current index value and the adjacent index value: 4 3
+      char *digit2 = (char*)malloc(sizeof(char)); 
+      *(digit2) = char_arry_num[cur_index];
+      char *digit1 = (char*)malloc(sizeof(char)); 
+      *(digit1) = char_arry_num[adj_index];
 
-      if(atoi(digit1) != 0){
+      int two_digit_value = atoi(digit2) * 10 + atoi(digit1);
+      printf("%d\n", two_digit_value);
+
+      Vigesimal(two_digit_value, temp); // if the value is 10-19
+      if(strlen(temp) == 0) 
+      {
+        // otherwise, we break down the two digits
+        // breaking down the second digit
+        Tens(atoi(digit2), temp);
+        strcat(result, temp);
+
+        if (strlen(temp) != 0 && atoi(digit1) != 0)
+        {
+          // in the case we get a valid result from Tens method 
+          // and the adjacent value is not zero,
+          // then add this spacer
+          strcat(result, "-");
+        }
+        
+        // breaking down the first digit
         Decimal(atoi(digit1), temp);
-        strcat(result, "-");
         strcat(result, temp);
       }
-    }else
-    {
-      strcat(result, temp);
+      else
+      {
+        // if the value is 10-19, just add the temp to the final buffer
+        strcat(result, temp);
+      }
+
+      free(digit1); /*deallocate the memory for deep copy*/
+      free(digit2); /*deallocate the memory for deep copy*/
+      // adjusting the two indices
+      cur_index = adj_index;
+      ++cur_index;
+      adj_index = cur_index + 1;
     }
-    printf("%s\n", result);
-    free(digit1);
-    free(digit2);
-    // cur_index = adj_index;
-    // ++cur_index;
-    // adj_index = adj_index + 1;
-  }
-  else 
-  {
-    char *digit = (char*)malloc(sizeof(char));
-    *(digit) = char_arry_num[cur_index];
-    Decimal(atoi(digit), temp);
-    strcat(result, temp);
-    printf("%s\n", result);
-    free(digit);
-    // ++cur_index;
-  }
+    else 
+    {
+      // Get the current index value 
+      char *digit = (char*)malloc(sizeof(char));
+      *(digit) = char_arry_num[cur_index];
+      Decimal(atoi(digit), temp);
+      strcat(result, temp);
+      free(digit);
+      // adjusting the two indices. 
+      ++cur_index;
+      adj_index = cur_index + 1;
+    }
 
-  UpperRankPlacement(rank_index, upper_rank);
-  LowerRankPlacement(rank_index, lower_rank);
+    /*>>>>>>>>>>>>>> 2. Handle the Value Placement Quantity <<<<<<<<<<<<<*/
+    UpperRankPlacement(rank_index, upper_rank);
+    LowerRankPlacement(rank_index, lower_rank);
+    printf("upper rank: %s\n", upper_rank);
+    printf("lower rank: %s\n", lower_rank);
 
-  printf("upper rank: %s\n", upper_rank);
-  printf("lower rank: %s\n", lower_rank);
+    // In the case there we have placement like hundred thousands 
+    if (strlen(lower_rank) != 0)
+    {
+      //add the hundreds word as the lower rank compared to the thousands.
+      strcat(result, " ");
+      strcat(result, lower_rank);
+      // we dont have print the upper rank yet.
+    }
 
-  if (strlen(lower_rank) != 0)
-  {
+    // adjust the rank index based on if isPair.
+    if (isPair)
+    {
+      rank_index -= 2;
+    }
+    else{
+      --rank_index; 
+    }
+
+    // check the rank under this new rank index
+    UpperRankPlacement(rank_index, rank);
+
+    // compare previous rank with this new rank
+    if(strcmp(upper_rank, rank))
+    { 
+      // for example upper_rank is thousand and new rank is hundreds, this means there is a change in placement
+      // if different, then add upper rank
+      strcat(result, " ");
+      strcat(result, upper_rank);
+    }
+
     strcat(result, " ");
-    strcat(result, lower_rank);
+    printf("next cur_index: %d\n", cur_index);
+    printf("next adj_index: %d\n", adj_index);
+    printf("next rank: %d\n", rank_index);
+    printf("Result: %s\n", result);
+    printf("\n");
   }
-
-  UpperRankPlacement(rank_index - 1, rank);
-
-  if(strcmp(upper_rank, rank))
-  {
-    // if different, then add upper rank
-    strcat(result, " ");
-    strcat(result, upper_rank);
-  }
-  
-  
-  printf("%s", result);
-  printf("\n");
 }
 
 bool PlacementPair(int place)
