@@ -50,7 +50,7 @@ void print_graphics(void) {
         {
           printf("\\");
         }
-        // otherwise if does not match, then
+        // otherwise, if does not match, then
         else {
           printf(".");
         }
