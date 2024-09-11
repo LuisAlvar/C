@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Convert a single character to binary (8 bits + space)
+void charToBinary(char c, char* binary) {
+    for (int i = 7; i >= 0; i--) {
+        binary[i] = (c & 1) ? '1' : '0';
+        c >>= 1;
+    }
+    binary[8] = ' '; // Separate with a space
+}
+
+int main(void) {
+    char asciiFilePath[] = "path/to/your/ascii.txt";
+    char binaryFilePath[] = "path/to/your/binary.bin";
+
+    FILE* asciiFile = fopen(asciiFilePath, "r");
+    if (!asciiFile) {
+        perror("Error opening ASCII file");
+        return 1;
+    }
+
+    FILE* binaryFile = fopen(binaryFilePath, "wb");
+    if (!binaryFile) {
+        perror("Error creating binary file");
+        fclose(asciiFile);
+        return 1;
+    }
+
+    char buffer[101]; // Read up to 100 characters
+    while (fgets(buffer, sizeof(buffer), asciiFile)) {
+        int len = strlen(buffer);
+        for (int i = 0; i < len; i++) {
+            char binary[9]; // 8 bits + space
+            charToBinary(buffer[i], binary);
+            fputs(binary, binaryFile);
+        }
+    }
+
+    fclose(asciiFile);
+    fclose(binaryFile);
+
+    printf("ASCII file converted to binary and saved as %s\n", binaryFilePath);
+    return 0;
+}
+
+
+
+
+#include <stdio.h>
+
+// Convert an octet (8 bits) to its ASCII character
+char octetToChar(const char* octet) {
+    int decimal = 0;
+    for (int i = 0; i < 8; ++i) {
+        decimal <<= 1; // Shift left
+        decimal |= (octet[i] - '0'); // Add the bit
+    }
+    return (char)decimal;
+}
+
+int main(void) {
+    const char* binaryInput = "01000001 01000010 01000011"; // Example input
+    char output[100]; // Adjust size as needed
+
+    // Split the input into octets
+    char* token = strtok(binaryInput, " ");
+    int index = 0;
+    while (token != NULL) {
+        output[index++] = octetToChar(token);
+        token = strtok(NULL, " ");
+    }
+    output[index] = '\0'; // Null-terminate the output
+
+    printf("Converted text: %s\n", output);
+    return 0;
+}
