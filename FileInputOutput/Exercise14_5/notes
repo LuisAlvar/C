@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *inputFile, *outputFile;
+    char ch;
+
+    // Open input and output files
+    inputFile = fopen("input.txt", "r");
+    if (inputFile == NULL) {
+        perror("Error opening input file");
+        return 1;
+    }
+
+    outputFile = fopen("output.txt", "w");
+    if (outputFile == NULL) {
+        perror("Error creating output file");
+        fclose(inputFile);
+        return 1;
+    }
+
+    // Read from input file and filter characters
+    while ((ch = fgetc(inputFile)) != EOF) {
+        // Check if high bit is set
+        if ((ch & 0x80) == 0) {
+            // Write non-high-bit characters to output file
+            fputc(ch, outputFile);
+        }
+    }
+
+    // Close files
+    fclose(inputFile);
+    fclose(outputFile);
+
+    printf("Filtered characters with high bit set. Output saved to output.txt.\n");
+    return 0;
+}
