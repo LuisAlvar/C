@@ -1,8 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "./cJSON.h"
+#include <cjson/cJSON.h>
+#include <string.h>
+
+//sudo apt-get install libcjson-dev
+//add -lcjson on the final compile command
 
 char* program_name;
+
+struct UserData {
+  char Name[50];
+  char Address[100];
+};
 
 void usage(void) {
   fprintf(stderr, "Usage is %s [options] [file]\n", program_name);
@@ -32,8 +41,31 @@ void ReadJsonFile(char* file) {
 
   // Access specific values from the JSON object
   cJSON* first_name  = cJSON_GetObjectItemCaseSensitive(json, "first_name");
+  cJSON* last_name  = cJSON_GetObjectItemCaseSensitive(json, "last_name");
+  cJSON* address  = cJSON_GetObjectItemCaseSensitive(json, "address");
+  cJSON* city  = cJSON_GetObjectItemCaseSensitive(json, "city");
+  cJSON* state  = cJSON_GetObjectItemCaseSensitive(json, "state");
+  cJSON* zip  = cJSON_GetObjectItemCaseSensitive(json, "zip");
 
-  printf("First name: %s\n", first_name->valuestring);
+  // Map data from json to object type UserData
+  struct UserData ud;
+
+  strcpy(ud.Name, "");
+  strcat(ud.Name, first_name->valuestring);
+  strcat(ud.Name, " ");
+  strcat(ud.Name, last_name->valuestring);
+
+  strcpy(ud.Address, "");
+  strcat(ud.Address, address->valuestring);
+  strcat(ud.Address, " ");
+  strcat(ud.Address, city->valuestring);
+  strcat(ud.Address, ", ");
+  strcat(ud.Address, state->valuestring);
+  strcat(ud.Address, " ");
+  strcat(ud.Address, zip->valuestring);
+  
+  printf("Name: %s\n", ud.Name);
+  printf("Location: %s\n", ud.Address);
 
   cJSON_Delete(json);
 }

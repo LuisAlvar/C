@@ -16,7 +16,7 @@ CFLAGS=-g -D__USE_FIXED_PROTOTYPES__ -ansi -std=c11
 #
 
 main: main.c 
-	$(CC) $(CFLAGS) -o ./bin/main main.c -lm
+	$(CC) $(CFLAGS) -o ./bin/main main.c -lm -lcjson
 	
 clean:
 	rm -f ./bin/main
