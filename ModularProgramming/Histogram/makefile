@@ -13,10 +13,17 @@ CFLAGS=-g -D__USE_FIXED_PROTOTYPES__ -ansi -std=c11
 #				-D__USE_FIXED_PROTOTYPES__
 #								-- Force the compiler to use the correct headers
 #				-amso		-- Dont use GNU extensions. Stick to ANSI C.
-#
+# A bit of docker image without stages lol
 
-main: main.c 
-	$(CC) $(CFLAGS) -o ./bin/main main.c -lm
-	
+all: hist
+
+hist: hist.o ./bin/ia.o
+	cp ./hist.o ./bin/; rm ./hist.o;
+	$(CC) $(CFLAGS) -o ./bin/hist ./bin/hist.o ./bin/ia.o;
+	cp ./bin/hist ./app; rm ./bin/hist;
+
+hist.o: hist.c ./bin/ia.h
+./bin/ia.o: ./bin/ia.c ./bin/ia.h
+
 clean:
-	rm -f ./bin/main
+	rm -f ./*/*.o ./app/hist 
