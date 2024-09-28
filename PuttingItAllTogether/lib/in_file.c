@@ -48,3 +48,45 @@ int in_open(const char name[])
   in_file.char_ptr = in_file.line;
   return 0;
 }
+
+/// @brief Closes the input file.
+void in_close(void) 
+{
+  if(in_file.file != NULL)
+  {
+    fclose(in_file.file);
+    in_file.file = NULL;
+  }
+}
+
+/// @brief Gets the current input character.
+/// @return Current character
+int in_cur_char(void)
+{
+  return (in_file.cur_char);
+}
+
+/// @brief Peeks ahead one character
+/// @return Next character
+int in_next_char(void)
+{
+  return (in_file.next_char);
+}
+
+/// @brief Flushes the buffered input line to the screen.
+void in_flush(void)
+{
+  *in_file.char_ptr = '\0';
+  fputs(in_file.line, stdout);
+  in_file.char_ptr = in_file.line;
+}
+
+/// @brief Read the next character from the input file.
+void in_read_char(void)
+{
+  *in_file.char_ptr = in_file.cur_char;
+  ++in_file.char_ptr;
+
+  in_file.cur_char = in_file.next_char;
+  in_file.next_char = fgetc(in_file.file);
+}
